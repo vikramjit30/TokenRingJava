@@ -10,7 +10,7 @@ public class Client implements Runnable{
 
         System.out.println("Client starts");
         test();
-        System.out.println("Your choice: 1 - add an event /n 2 - list of all events /n1");
+        System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n");
         while(true){
             Scanner sc = new Scanner(System.in);
             int choice = sc.nextInt();
@@ -19,6 +19,10 @@ public class Client implements Runnable{
                     System.out.println("Input is 1");break; //add
                 case 2:
                     System.out.println("Input is 2");break; //list
+                case 3:
+                    System.out.println("Input is 3"); //remove entry
+                case 4:
+                    System.out.println("Input is 4"); // modify entry
                 case 0:
                     System.exit(0);
                 default:
