@@ -63,9 +63,10 @@ public class Client implements Runnable{
         // 1. parse IP address as argument
         // 2. create file
         // 3. call function get_all events from the IP-address
-        // 4. sout (Ready to use!)
+        // 4. put all events in file
         // 5. get the list of all online nodes from IP_address
-        // 6.
+        // 6. sout (Ready to use!)
+        // 7. show a menu
     }
 
 }
