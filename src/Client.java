@@ -59,9 +59,13 @@ public class Client implements Runnable{
         }
     }
     public void initialize(){
+        //To do:
         // 1. parse IP address as argument
-        // 1. create file
-        //
+        // 2. create file
+        // 3. call function get_all events from the IP-address
+        // 4. sout (Ready to use!)
+        // 5. get the list of all online nodes from IP_address
+        // 6.
     }
 
 }
