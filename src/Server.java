@@ -50,7 +50,5 @@ public class Server implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-        for(int i = 9; i<20; i++)
-            System.out.println("Server " + i);
     }
 }
