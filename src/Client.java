@@ -1,16 +1,16 @@
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Client implements Runnable{
 
     private String activeNode;     //IP-address of the first online node
+    private ArrayList<String> activeNodes;
+    private boolean isOnline = false;
 
     public Client(String activeNode) {
         this.activeNode = StringtoURL(activeNode);
@@ -88,7 +88,7 @@ public class Client implements Runnable{
     public void initialize(){
         //To do:
         // 1. parse IP address as argument  ... done!
-        // 2. create file...
+        // 2. create file...             ....done!
         // 3. call function get_all events from the IP-address
         // 4. put all events in file
         // 5. get the list of all online nodes from IP_address
@@ -97,7 +97,13 @@ public class Client implements Runnable{
         if (new File(System.getProperty("user.dir") + "Calendar.txt").isFile()){
             //do nothing
         }   else {
-
+            String filename= "Calendar.txt";
+            try {
+                FileWriter fw = new FileWriter(filename,true);
+                fw.close();
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
     }
 
@@ -164,6 +170,12 @@ public class Client implements Runnable{
         //1. code for reading an entry from standard input
         //2. find in our text file
         //3. send a message to all active nodes about deleting Entry
+    }
+    public void join(){
+        isOnline = true;
+    }
+    public void signOff(){
+        isOnline = false;
     }
 
 }
