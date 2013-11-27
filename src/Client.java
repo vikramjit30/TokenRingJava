@@ -2,6 +2,7 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -40,6 +41,10 @@ public class Client implements Runnable{
                     System.out.println("Input is 3"); deleteEntry(); break; //remove entry
                 case 4:
                     System.out.println("Input is 4"); break; // modify entry
+                case 5:
+                    System.out.println("Input is 5"); break; // join to the network
+                case 6:
+                    System.out.println("Input is 6"); break; // sign off the network
                 case 0:
                     System.exit(0);
                 default:
@@ -89,6 +94,11 @@ public class Client implements Runnable{
         // 5. get the list of all online nodes from IP_address
         // 6. sout (Ready to use!)
         // 7. show a menu
+        if (new File(System.getProperty("user.dir") + "Calendar.txt").isFile()){
+            //do nothing
+        }   else {
+
+        }
     }
 
     public String StringtoURL(String s){
@@ -137,9 +147,11 @@ public class Client implements Runnable{
             System.out.println("IO error!");
             System.exit(1);
         }
+        CalendarEntry entry = new CalendarEntry(date, time, duration, header, comment);
+        entry.writeToFile();
         //1. code for reading an entry from standard input and   ... done!
-        //2. creating an object CalendarEntry
-        //3. CalendarEntry.
+        //2. creating an object CalendarEntry    ....done!
+        //3. Write to file an entry.              ...done!
         //4. send a message to all active nodes about adding Entry
         return null;
     }

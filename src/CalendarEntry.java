@@ -16,6 +16,8 @@ public class CalendarEntry {
         id++;
     }
 
-
+    public void writeToFile(){
+        //code for writing to file
+    }
 
 }
