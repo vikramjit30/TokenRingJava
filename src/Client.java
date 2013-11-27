@@ -12,6 +12,9 @@ public class Client implements Runnable{
         this.activeNode = StringtoURL(activeNode);
     }
 
+    public Client() {
+    }
+
     @Override
     public void run() {
 
@@ -26,9 +29,9 @@ public class Client implements Runnable{
             int choice = sc.nextInt();
             switch(choice){
                 case 1:
-                    System.out.println("Input is 1");break; //add
+                    System.out.println("Input is 1");addEntry(); break; //add
                 case 2:
-                    System.out.println("Input is 2");break; //list
+                    System.out.println("Input is 2"); getListOfEvents(); break; //list
                 case 3:
                     System.out.println("Input is 3"); break; //remove entry
                 case 4:
@@ -75,8 +78,8 @@ public class Client implements Runnable{
     }
     public void initialize(){
         //To do:
-        // 1. parse IP address as argument
-        // 2. create file
+        // 1. parse IP address as argument  ... done!
+        // 2. create file...
         // 3. call function get_all events from the IP-address
         // 4. put all events in file
         // 5. get the list of all online nodes from IP_address
@@ -86,6 +89,18 @@ public class Client implements Runnable{
 
     public String StringtoURL(String s){
         return ("http://" + s + ":8764/xmlrpc");
+    }
+
+    public String addEntry(){
+        //1. code for reading an entry from standard input and
+        //2. creating an object CalendarEntry
+        //3. CalendarEntry.
+        return null;
+    }
+
+    public void getListOfEvents(){
+        //1. reading from file line by line
+        //2. output each line
     }
 
 }
