@@ -8,7 +8,6 @@
 public class Test {
     public static void main(String[] args) {
         System.out.println("It works.");
-        Client client = new Client();
-        System.out.println(client.StringtoURL("192.168.55.32"));
+
     }
 }

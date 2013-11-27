@@ -24,9 +24,11 @@ public class Server implements Runnable {
            */
         try {
             phm.addHandler("Calculator", Calculator.class);
+            phm.addHandler("Calendar", Calendar.class);
         } catch (XmlRpcException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+        System.out.println("Done!");
         //phm.addHandler("CalendarWrite", CalendarWrite.class);
        //phm.addHandler("CalendarReceive", CalendarReceive.class);
         //phm.addHandler("CalendarRemove", CalendarRemove.class);
