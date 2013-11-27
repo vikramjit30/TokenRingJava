@@ -10,7 +10,8 @@ public class Client implements Runnable{
 
         System.out.println("Client starts");
         test();
-        System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n");
+        System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n" +
+                "3 - modify an event \n 4 - delete an event \n 0 - exit");
         while(true){
             Scanner sc = new Scanner(System.in);
             int choice = sc.nextInt();
