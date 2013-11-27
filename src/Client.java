@@ -11,7 +11,7 @@ public class Client implements Runnable{
         System.out.println("Client starts");
         test();
         System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n" +
-                "3 - modify an event \n 4 - delete an event \n 0 - exit");
+                " 3 - modify an event \n 4 - delete an event \n 0 - exit");
         while(true){
             Scanner sc = new Scanner(System.in);
             int choice = sc.nextInt();
@@ -21,9 +21,9 @@ public class Client implements Runnable{
                 case 2:
                     System.out.println("Input is 2");break; //list
                 case 3:
-                    System.out.println("Input is 3"); //remove entry
+                    System.out.println("Input is 3"); break; //remove entry
                 case 4:
-                    System.out.println("Input is 4"); // modify entry
+                    System.out.println("Input is 4"); break; // modify entry
                 case 0:
                     System.exit(0);
                 default:
@@ -72,6 +72,10 @@ public class Client implements Runnable{
         // 5. get the list of all online nodes from IP_address
         // 6. sout (Ready to use!)
         // 7. show a menu
+    }
+
+    public String StringtoURL(String s){
+        return ("http://" + s + ":8764/xmlrpc");
     }
 
 }
