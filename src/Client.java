@@ -1,6 +1,9 @@
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -13,6 +16,7 @@ public class Client implements Runnable{
     }
 
     public Client() {
+        //some code
     }
 
     @Override
@@ -29,11 +33,11 @@ public class Client implements Runnable{
             int choice = sc.nextInt();
             switch(choice){
                 case 1:
-                    System.out.println("Input is 1");addEntry(); break; //add
+                    System.out.println("Input is 1"); addEntry(); break; //add
                 case 2:
                     System.out.println("Input is 2"); getListOfEvents(); break; //list
                 case 3:
-                    System.out.println("Input is 3"); break; //remove entry
+                    System.out.println("Input is 3"); deleteEntry(); break; //remove entry
                 case 4:
                     System.out.println("Input is 4"); break; // modify entry
                 case 0:
@@ -92,15 +96,62 @@ public class Client implements Runnable{
     }
 
     public String addEntry(){
-        //1. code for reading an entry from standard input and
+        System.out.println("Input date");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String date = null;
+        try {
+            date = br.readLine();
+        } catch (IOException e) {
+            System.out.println("IO error!");
+            System.exit(1);
+        }
+        System.out.println("Input time");
+        String time = null;
+        try {
+            time = br.readLine();
+        } catch (IOException e) {
+            System.out.println("IO error!");
+            System.exit(1);
+        }
+        System.out.println("Input duration");
+        String duration = null;
+        try {
+            duration = br.readLine();
+        } catch (IOException e) {
+            System.out.println("IO error!");
+            System.exit(1);
+        }
+        System.out.println("Input header");
+        String header = null;
+        try {
+            header = br.readLine();
+        } catch (IOException e) {
+            System.out.println("IO error!");
+            System.exit(1);
+        }
+        System.out.println("Input comment");
+        String comment = null;
+        try {
+            time = br.readLine();
+        } catch (IOException e) {
+            System.out.println("IO error!");
+            System.exit(1);
+        }
+        //1. code for reading an entry from standard input and   ... done!
         //2. creating an object CalendarEntry
         //3. CalendarEntry.
+        //4. send a message to all active nodes about adding Entry
         return null;
     }
 
     public void getListOfEvents(){
         //1. reading from file line by line
         //2. output each line
+    }
+    public void deleteEntry(){
+        //1. code for reading an entry from standard input
+        //2. find in our text file
+        //3. send a message to all active nodes about deleting Entry
     }
 
 }
