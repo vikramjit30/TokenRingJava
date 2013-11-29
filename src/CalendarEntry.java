@@ -19,5 +19,9 @@ public class CalendarEntry {
     public void writeToFile(){
         //code for writing to file
     }
+    public String makeString(){
+        return (Integer.toString(id) + "/" + date + "/" + time + "/" +
+                duration + "/" + header + "/" + comment);
+    }
 
 }

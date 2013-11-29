@@ -156,7 +156,7 @@ public class Client implements Runnable{
         System.out.println("Input comment");
         String comment = null;
         try {
-            time = br.readLine();
+            comment = br.readLine();
         } catch (IOException e) {
             System.out.println("IO error!");
             System.exit(1);
@@ -169,11 +169,36 @@ public class Client implements Runnable{
         //4. send a message to all active nodes about adding Entry       ...in process!
         activeNodes.add("127.0.0.1");
         for (String s:activeNodes){
-           addOverRPC(s, "gfgfg");
+           addOverRPC(s, entry.makeString());
         }
     }
 
     public void getListOfEvents(){
+        if(isOnline){
+            System.out.println("wronG");
+            //do something
+        } else {
+            File file = new File("Calendar.txt");
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new FileReader(file));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            String line;
+            try {
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
         //1. reading from file line by line
         //2. output each line
     }
@@ -210,5 +235,8 @@ public class Client implements Runnable{
         } catch (XmlRpcException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+
+
     }
+
 }

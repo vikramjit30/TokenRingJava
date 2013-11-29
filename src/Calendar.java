@@ -8,11 +8,11 @@ import java.io.PrintWriter;
 public class Calendar {
 
     public int addEntry(String s){
-        System.out.println("Adding entry..."+ s);
+        System.out.println("Adding entry...Done!");
         PrintWriter out = null;
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
-            out.println("new yahooo");
+            out.println(s);
         }catch (IOException e) {
             System.err.println(e);
         }finally{
