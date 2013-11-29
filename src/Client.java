@@ -42,9 +42,9 @@ public class Client implements Runnable{
                 case 4:
                     System.out.println("Input is 4"); break; // modify entry
                 case 5:
-                    System.out.println("Input is 5"); break; // join to the network
+                    System.out.println("Input is 5");  join(); break;// join to the network
                 case 6:
-                    System.out.println("Input is 6"); break; // sign off the network
+                    System.out.println("Input is 6"); signOff(); break; // sign off the network
                 case 0:
                     System.exit(0);
                 default:
@@ -111,7 +111,7 @@ public class Client implements Runnable{
         return ("http://" + s + ":8764/xmlrpc");
     }
 
-    public String addEntry(){
+    public void addEntry(){
         System.out.println("Input date");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String date = null;
@@ -159,7 +159,10 @@ public class Client implements Runnable{
         //2. creating an object CalendarEntry    ....done!
         //3. Write to file an entry.              ...done!
         //4. send a message to all active nodes about adding Entry
-        return null;
+
+        for (String s:activeNodes){
+
+        }
     }
 
     public void getListOfEvents(){
@@ -172,9 +175,11 @@ public class Client implements Runnable{
         //3. send a message to all active nodes about deleting Entry
     }
     public void join(){
+        //some code
         isOnline = true;
     }
     public void signOff(){
+        //some code
         isOnline = false;
     }
 
