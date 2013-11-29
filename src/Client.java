@@ -10,13 +10,15 @@ import java.util.Scanner;
 
 public class Client implements Runnable{
 
-    private String activeNode;     //IP-address of the first online node
+    private String firstActiveNode;     //IP-address of the first online node
     private ArrayList<String> activeNodes;   //we should use the separate class for that!
     private boolean isOnline = false;
 
-    public Client(String activeNode) {
-        this.activeNode = StringtoURL(activeNode);
+    public Client(String firstActiveNode) {
+        this.firstActiveNode = firstActiveNode;
         activeNodes = new ArrayList<String>();
+        activeNodes.add(firstActiveNode);
+        isOnline = true;
     }
 
     public Client() {
@@ -34,7 +36,8 @@ public class Client implements Runnable{
 
         while(true){
             System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n" +
-                    " 3 - modify an event \n 4 - delete an event \n 0 - exit");
+                    " 3 - modify an event \n 4 - delete an event \n 5 - join the network \n 6 - sign off" +
+                    "\n 0 - exit ");
             Scanner sc = new Scanner(System.in);
             int choice = sc.nextInt();
             switch(choice){
@@ -64,7 +67,7 @@ public class Client implements Runnable{
         try{
 
             XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-            config.setServerURL(new URL(activeNode));
+            config.setServerURL(new URL(StringtoURL(firstActiveNode)));
             XmlRpcClient client = new XmlRpcClient();
             client.setConfig(config);
 
@@ -167,7 +170,7 @@ public class Client implements Runnable{
         //2. creating an object CalendarEntry    ....done!
         //3. Write to file an entry.              ...done!
         //4. send a message to all active nodes about adding Entry       ...in process!
-        activeNodes.add("127.0.0.1");
+        activeNodes.add(firstActiveNode);
         for (String s:activeNodes){
            addOverRPC(s, entry.makeString());
         }
@@ -175,8 +178,21 @@ public class Client implements Runnable{
 
     public void getListOfEvents(){
         if(isOnline){
-            System.out.println("wronG");
-            //do something
+            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+            try {
+                config.setServerURL(new URL(StringtoURL(firstActiveNode)));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            XmlRpcClient client = new XmlRpcClient();
+            client.setConfig(config);
+
+            Object[] params = new Object[] {};
+            try {
+               String s = (String) client.execute("Calendar.getList", params);
+                } catch (XmlRpcException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         } else {
             File file = new File("Calendar.txt");
             BufferedReader br = null;
@@ -208,8 +224,18 @@ public class Client implements Runnable{
         //3. send a message to all active nodes about deleting Entry
     }
     public void join(){
-        //some code
         isOnline = true;
+        System.out.println("Input IP-address of active node");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String ipAddress = null;
+        try {
+            ipAddress = br.readLine();
+        } catch (IOException e) {
+            System.out.println("IO error!");
+            System.exit(1);
+        }
+        firstActiveNode = ipAddress;
+        getListOfEvents();
     }
     public void signOff(){
         //some code
@@ -222,7 +248,7 @@ public class Client implements Runnable{
     public void addOverRPC(String IpAddress, String message){
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         try {
-            config.setServerURL(new URL(activeNode));
+            config.setServerURL(new URL(StringtoURL(IpAddress)));
         } catch (MalformedURLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

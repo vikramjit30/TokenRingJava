@@ -24,16 +24,15 @@ public class Calendar {
     }
 
     public void deleteEntry(String s){
-        System.out.println("Deleting entry..." + s);
+        System.out.println("Deleting entry...Done!");
     }
 
     public void modifyEntry(String s){
-        System.out.println("Modifying entry..." + s);
+        System.out.println("Modifying entry...Done!");
     }
 
-    public String[] getList(){
-        String[] s = new String[1];
-        return s;
+    public String getList(){
+         return "hello";
     }
 
 }
