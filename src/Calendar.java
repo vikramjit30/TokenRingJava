@@ -1,9 +1,25 @@
-//auxiliary class for implementing of XMLRPC=methods
+//auxiliary class for implementing of XMLRPC-methods
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Calendar {
 
     public int addEntry(String s){
         System.out.println("Adding entry..."+ s);
+        PrintWriter out = null;
+        try {
+            out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
+            out.println("new yahooo");
+        }catch (IOException e) {
+            System.err.println(e);
+        }finally{
+            if(out != null){
+                out.close();
+            }
+        }
         return 42;
     }
 
@@ -19,4 +35,5 @@ public class Calendar {
         String[] s = new String[1];
         return s;
     }
+
 }

@@ -1,7 +1,9 @@
+import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -9,14 +11,16 @@ import java.util.Scanner;
 public class Client implements Runnable{
 
     private String activeNode;     //IP-address of the first online node
-    private ArrayList<String> activeNodes;
+    private ArrayList<String> activeNodes;   //we should use the separate class for that!
     private boolean isOnline = false;
 
     public Client(String activeNode) {
         this.activeNode = StringtoURL(activeNode);
+        activeNodes = new ArrayList<String>();
     }
 
     public Client() {
+        activeNodes = new ArrayList<String>();
         //some code
     }
 
@@ -27,9 +31,10 @@ public class Client implements Runnable{
         initialize();
 
         test();
-        System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n" +
-                " 3 - modify an event \n 4 - delete an event \n 0 - exit");
+
         while(true){
+            System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n" +
+                    " 3 - modify an event \n 4 - delete an event \n 0 - exit");
             Scanner sc = new Scanner(System.in);
             int choice = sc.nextInt();
             switch(choice){
@@ -40,7 +45,7 @@ public class Client implements Runnable{
                 case 3:
                     System.out.println("Input is 3"); deleteEntry(); break; //remove entry
                 case 4:
-                    System.out.println("Input is 4"); break; // modify entry
+                    System.out.println("Input is 4"); modifyEntry(); break; // modify entry
                 case 5:
                     System.out.println("Input is 5");  join(); break;// join to the network
                 case 6:
@@ -52,6 +57,9 @@ public class Client implements Runnable{
             }
         }
     }
+
+
+
     public void test(){
         try{
 
@@ -77,9 +85,9 @@ public class Client implements Runnable{
 //          failed. Only standard types
 //
 //          testing reading an entry from File
-            Object[] params2 = new Object[]{"example"};
-            int a = (Integer) client.execute("Calendar.addEntry", params2);
-            System.out.println("if the result equals to 42 it works right: " + a);
+//            Object[] params2 = new Object[]{"example"};
+//            int a = (Integer) client.execute("Calendar.addEntry", params2);
+//            System.out.println("if the result equals to 42 it works right: " + a);
             }
         catch (Exception exception) {
             System.err.println("Client: " + exception.toString());
@@ -158,10 +166,10 @@ public class Client implements Runnable{
         //1. code for reading an entry from standard input and   ... done!
         //2. creating an object CalendarEntry    ....done!
         //3. Write to file an entry.              ...done!
-        //4. send a message to all active nodes about adding Entry
-
+        //4. send a message to all active nodes about adding Entry       ...in process!
+        activeNodes.add("127.0.0.1");
         for (String s:activeNodes){
-
+           addOverRPC(s, "gfgfg");
         }
     }
 
@@ -182,5 +190,25 @@ public class Client implements Runnable{
         //some code
         isOnline = false;
     }
+    public void modifyEntry() {
+        //some code
+    }
 
+    public void addOverRPC(String IpAddress, String message){
+        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        try {
+            config.setServerURL(new URL(activeNode));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        XmlRpcClient client = new XmlRpcClient();
+        client.setConfig(config);
+
+        Object[] params = new Object[]{message};
+        try {
+            client.execute("Calendar.addEntry", params);
+        } catch (XmlRpcException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
 }
