@@ -62,7 +62,6 @@ public class Client implements Runnable{
     }
 
 
-
     public void test(){
         try{
 
@@ -215,10 +214,11 @@ public class Client implements Runnable{
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
-        //1. reading from file line by line
-        //2. output each line
+        //1. reading from file line by line  ...done!
+        //2. output each line                ...done!
     }
     public void deleteEntry(){
+
         //1. code for reading an entry from standard input
         //2. find in our text file
         //3. send a message to all active nodes about deleting Entry
@@ -235,11 +235,13 @@ public class Client implements Runnable{
             System.exit(1);
         }
         firstActiveNode = ipAddress;
+        activeNodes.add(firstActiveNode);
         getListOfEvents();
     }
     public void signOff(){
-        //some code
         isOnline = false;
+        //send a message to all nodes!!!!
+
     }
     public void modifyEntry() {
         //some code
@@ -261,8 +263,5 @@ public class Client implements Runnable{
         } catch (XmlRpcException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-
-
     }
-
 }

@@ -25,13 +25,16 @@ public class Calendar {
 
     public void deleteEntry(String s){
         System.out.println("Deleting entry...Done!");
+        //search in file line by line
+        //delete line
     }
 
-    public void modifyEntry(String s){
-        System.out.println("Modifying entry...Done!");
-    }
+//    public void modifyEntry(String s){
+//        System.out.println("Modifying entry...Done!");
+//    }
 
     public String getList(){
+        //read from the file and create one string and send
          return "hello";
     }
 
