@@ -68,7 +68,7 @@ public class Client implements Runnable{
         try{
 
             XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-            config.setServerURL(new URL(StringtoURL(firstActiveNode)));
+            config.setServerURL(new URL(StringToURL(firstActiveNode)));
             XmlRpcClient client = new XmlRpcClient();
             client.setConfig(config);
 
@@ -104,8 +104,7 @@ public class Client implements Runnable{
         // 3. call function get_all events from the IP-address
         // 4. put all events in file
         // 5. get the list of all online nodes from IP_address
-        // 6. sout (Ready to use!)
-        // 7. show a menu
+        //
         if (new File(System.getProperty("user.dir") + "Calendar.txt").isFile()){
             //do nothing
         }   else {
@@ -119,7 +118,7 @@ public class Client implements Runnable{
         }
     }
 
-    public String StringtoURL(String s){
+    public String StringToURL(String s){
         return ("http://" + s + ":8764/xmlrpc");
     }
 
@@ -186,18 +185,19 @@ public class Client implements Runnable{
         if(isOnline){
             XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
             try {
-                config.setServerURL(new URL(StringtoURL(firstActiveNode)));
+                config.setServerURL(new URL(StringToURL(firstActiveNode)));
             } catch (MalformedURLException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
             XmlRpcClient client = new XmlRpcClient();
             client.setConfig(config);
 
             Object[] params = new Object[] {};
+
             try {
                String s = (String) client.execute("Calendar.getList", params);
                 } catch (XmlRpcException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         } else {
             File file = new File("Calendar.txt");
@@ -205,7 +205,7 @@ public class Client implements Runnable{
             try {
                 br = new BufferedReader(new FileReader(file));
             } catch (FileNotFoundException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
             String line;
             try {
@@ -213,12 +213,12 @@ public class Client implements Runnable{
                     System.out.println(line);
                 }
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
             try {
                 br.close();
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
         }
         //1. reading from file line by line  ...done!
@@ -256,7 +256,7 @@ public class Client implements Runnable{
     public void addOverRPC(String IpAddress, String message){
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         try {
-            config.setServerURL(new URL(StringtoURL(IpAddress)));
+            config.setServerURL(new URL(StringToURL(IpAddress)));
         } catch (MalformedURLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

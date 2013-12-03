@@ -5,6 +5,7 @@ public class ClientApp {
         serverThread.start();
         Thread clientThread = new Thread(new Client());
         clientThread.start();
+        //Use port 8764!
 //        System.out.println(args[0]);
 //        if (args.length == 0){
 //            Thread clientThread = new Thread(new Client());
