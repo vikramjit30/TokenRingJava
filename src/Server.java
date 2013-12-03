@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class Server implements Runnable {
 
-    private static final int port = 8764;
+    private static final int port = 6311;
 
     @Override
     public void run() {
@@ -25,6 +25,8 @@ public class Server implements Runnable {
         try {
             phm.addHandler("Calculator", Calculator.class);
             phm.addHandler("Calendar", Calendar.class);
+            phm.addHandler("Node", Node.class);
+
         } catch (XmlRpcException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

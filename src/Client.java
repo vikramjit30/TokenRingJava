@@ -11,14 +11,16 @@ import java.util.Scanner;
 public class Client implements Runnable{
 
     private String firstActiveNode;     //IP-address of the first online node
-    private ArrayList<String> activeNodes;   //we should use the separate class for that!
+
     private boolean isOnline = false;
+    public ArrayList<String> activeNodes;   //we should use the separate class for that!
 
     public Client(String firstActiveNode) {
         this.firstActiveNode = firstActiveNode;
         activeNodes = new ArrayList<String>();
         activeNodes.add(firstActiveNode);
         isOnline = true;
+        //we don't need this actually
     }
 
     public Client() {
@@ -32,7 +34,7 @@ public class Client implements Runnable{
         System.out.println("Client starts");
         initialize();
 
-        test();
+        //test();
 
         while(true){
             System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n" +
@@ -122,57 +124,62 @@ public class Client implements Runnable{
     }
 
     public void addEntry(){
-        System.out.println("Input date");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String date = null;
-        try {
-            date = br.readLine();
-        } catch (IOException e) {
-            System.out.println("IO error!");
-            System.exit(1);
-        }
-        System.out.println("Input time");
-        String time = null;
-        try {
-            time = br.readLine();
-        } catch (IOException e) {
-            System.out.println("IO error!");
-            System.exit(1);
-        }
-        System.out.println("Input duration");
-        String duration = null;
-        try {
-            duration = br.readLine();
-        } catch (IOException e) {
-            System.out.println("IO error!");
-            System.exit(1);
-        }
-        System.out.println("Input header");
-        String header = null;
-        try {
-            header = br.readLine();
-        } catch (IOException e) {
-            System.out.println("IO error!");
-            System.exit(1);
-        }
-        System.out.println("Input comment");
-        String comment = null;
-        try {
-            comment = br.readLine();
-        } catch (IOException e) {
-            System.out.println("IO error!");
-            System.exit(1);
-        }
-        CalendarEntry entry = new CalendarEntry(date, time, duration, header, comment);
-        entry.writeToFile();
-        //1. code for reading an entry from standard input and   ... done!
-        //2. creating an object CalendarEntry    ....done!
-        //3. Write to file an entry.              ...done!
-        //4. send a message to all active nodes about adding Entry       ...in process!
-        activeNodes.add(firstActiveNode);
-        for (String s:activeNodes){
-           addOverRPC(s, entry.makeString());
-        }
+        if (isOnline){
+            System.out.println("Input date");
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String date = null;
+            try {
+                date = br.readLine();
+            } catch (IOException e) {
+                System.out.println("IO error!");
+                System.exit(1);
+            }
+            System.out.println("Input time");
+            String time = null;
+            try {
+                time = br.readLine();
+            } catch (IOException e) {
+                System.out.println("IO error!");
+                System.exit(1);
+            }
+            System.out.println("Input duration");
+            String duration = null;
+            try {
+                duration = br.readLine();
+            } catch (IOException e) {
+                System.out.println("IO error!");
+                System.exit(1);
+            }
+            System.out.println("Input header");
+            String header = null;
+            try {
+                header = br.readLine();
+            } catch (IOException e) {
+                System.out.println("IO error!");
+                System.exit(1);
+            }
+            System.out.println("Input comment");
+            String comment = null;
+            try {
+                comment = br.readLine();
+            } catch (IOException e) {
+                System.out.println("IO error!");
+                System.exit(1);
+            }
+            CalendarEntry entry = new CalendarEntry(date, time, duration, header, comment);
+            entry.writeToFile();
+            //1. code for reading an entry from standard input and   ... done!
+            //2. creating an object CalendarEntry    ....done!
+            //3. Write to file an entry.              ...done!
+            //4. send a message to all active nodes about adding Entry       ...in process!
+            //activeNodes.add(firstActiveNode);
+            for (String s:activeNodes){
+                addOverRPC(s, entry.makeString());
+            }
+        }   else {
+            System.out.println("Node is offline! Operation is not allowed");
+            }
+
     }
 
     public void getListOfEvents(){
@@ -246,7 +253,6 @@ public class Client implements Runnable{
     public void modifyEntry() {
         //some code
     }
-
     public void addOverRPC(String IpAddress, String message){
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         try {

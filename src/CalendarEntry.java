@@ -17,7 +17,7 @@ public class CalendarEntry {
     }
 
     public void writeToFile(){
-        //code for writing to file
+        //1. Write new line to file as date/time/../comment
     }
     public String makeString(){
         return (Integer.toString(id) + "/" + date + "/" + time + "/" +
