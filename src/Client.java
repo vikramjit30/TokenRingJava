@@ -3,6 +3,7 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -13,18 +14,11 @@ public class Client implements Runnable{
     private String firstActiveNode;     //IP-address of the first online node
 
     private boolean isOnline = false;
-    public ArrayList<String> activeNodes;   //we should use the separate class for that!
+    //public ArrayList<String> activeNodes;   //we should use the separate class for that!
 
-    public Client(String firstActiveNode) {
-        this.firstActiveNode = firstActiveNode;
-        activeNodes = new ArrayList<String>();
-        activeNodes.add(firstActiveNode);
-        isOnline = true;
-        //we don't need this actually
-    }
 
     public Client() {
-        activeNodes = new ArrayList<String>();
+        //activeNodes = new ArrayList<String>();
         //some code
     }
 
@@ -101,7 +95,7 @@ public class Client implements Runnable{
         //To do:
         // 1. parse IP address as argument  ... done!
         // 2. create file...             ....done!
-        // 3. call function get_all events from the IP-address
+        // 3. call function get_all events from the IP-address   ..done!
         // 4. put all events in file
         // 5. get the list of all online nodes from IP_address
         //
@@ -115,6 +109,13 @@ public class Client implements Runnable{
             } catch (IOException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
+        }
+        String filename= "Nodes.txt";
+        try {
+            FileWriter fw = new FileWriter(filename,true);
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
@@ -172,7 +173,9 @@ public class Client implements Runnable{
             //3. Write to file an entry.              ...done!
             //4. send a message to all active nodes about adding Entry       ...in process!
             //activeNodes.add(firstActiveNode);
-            for (String s:activeNodes){
+
+            ArrayList<String> activeNodes1= getListOfActiveNodes();
+            for (String s:activeNodes1){
                 addOverRPC(s, entry.makeString());
             }
         }   else {
@@ -196,10 +199,20 @@ public class Client implements Runnable{
 
             try {
                 Object[] list = (Object[]) client.execute("Calendar.getList", params);
+                PrintWriter out = null;
                 for (int i = 0; i < list.length; i++){
-                    System.out.println(list[i].toString());
+                    try {
+                        out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
+                        out.println(list[i].toString());
+                    }catch (IOException e) {
+                        System.err.println(e);
+                    }finally{
+                        if(out != null){
+                            out.close();
+                        }
+                    }
                 }
-                } catch (XmlRpcException e) {
+            } catch (XmlRpcException e) {
                 e.printStackTrace();
             }
 
@@ -225,8 +238,6 @@ public class Client implements Runnable{
                 e.printStackTrace();
             }
         }
-        //1. reading from file line by line  ...done!
-        //2. output each line                ...done!
     }
     public void deleteEntry(){
 
@@ -246,13 +257,45 @@ public class Client implements Runnable{
             System.exit(1);
         }
         firstActiveNode = ipAddress;
-        activeNodes.add(firstActiveNode);
+        //activeNodes.add(firstActiveNode);
         getListOfEvents(true);
+        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        try {
+            config.setServerURL(new URL(StringToURL(firstActiveNode)));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        XmlRpcClient client = new XmlRpcClient();
+        client.setConfig(config);
+
+        Object[] params = new Object[] {};
+        try {
+            Object[] listOfNodes = (Object[]) client.execute("Node.GetListOfActiveNode", params);
+            PrintWriter out = null;
+            for (int i = 0; i < listOfNodes.length; i++){
+                try {
+                    out = new PrintWriter(new BufferedWriter(new FileWriter("Nodes.txt", true)));
+                    out.println(listOfNodes[i].toString());
+                }catch (IOException e) {
+                    System.err.println(e);
+                }finally{
+                    if(out != null){
+                        out.close();
+                    }
+                }
+            }
+        } catch (XmlRpcException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        addOwnIpToListOfActive();
+
     }
     public void signOff(){
         isOnline = false;
-        //send a message to all nodes!!!!
-
+        //get ipadress
+        //get list of active nodes
+        //call function fromall nodes Node.Delete
     }
     public void modifyEntry() {
         //some code
@@ -272,6 +315,45 @@ public class Client implements Runnable{
             client.execute("Calendar.addEntry", params);
         } catch (XmlRpcException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    public ArrayList<String> getListOfActiveNodes(){
+        File file = new File("Nodes.txt");
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ArrayList<String> lines= new ArrayList<String>();
+        String nextLine;
+        try {
+                while ((nextLine = br.readLine()) != null) {
+                    lines.add(nextLine);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        try {
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lines;
+    }
+    public void addOwnIpToListOfActive(){
+        PrintWriter out = null;
+        try {
+            out = new PrintWriter(new BufferedWriter(new FileWriter("Nodes.txt", true)));
+            out.println(InetAddress.getLocalHost().getHostAddress());
+        }catch (IOException e) {
+            System.err.println(e);
+        }finally{
+            if(out != null){
+                out.close();
+            }
         }
     }
 }
