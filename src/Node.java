@@ -33,6 +33,7 @@ public class Node {
 
     public boolean Add(String IpAddress){
         //1. Add a new line to Nodes.txt
+       // Client.
         PrintWriter out = null;
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter("Nodes.txt", true)));

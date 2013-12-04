@@ -6,6 +6,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -14,11 +15,11 @@ public class Client implements Runnable{
     private String firstActiveNode;     //IP-address of the first online node
 
     private boolean isOnline = false;
-    //public ArrayList<String> activeNodes;   //we should use the separate class for that!
+    public static ArrayList<String> activeNodes;   //we should use the separate class for that!
 
 
     public Client() {
-        //activeNodes = new ArrayList<String>();
+        activeNodes = new ArrayList<String>();
         //some code
     }
 
@@ -293,9 +294,15 @@ public class Client implements Runnable{
     }
     public void signOff(){
         isOnline = false;
-        //get ipadress
+        try {
+            String ownIpAddress = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        //ArrayList <String> activeNodes
+        //get ipadress        ..done!
         //get list of active nodes
-        //call function fromall nodes Node.Delete
+        //call function from all nodes Node.Delete
     }
     public void modifyEntry() {
         //some code
@@ -305,7 +312,7 @@ public class Client implements Runnable{
         try {
             config.setServerURL(new URL(StringToURL(IpAddress)));
         } catch (MalformedURLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
         XmlRpcClient client = new XmlRpcClient();
         client.setConfig(config);
@@ -314,7 +321,7 @@ public class Client implements Runnable{
         try {
             client.execute("Calendar.addEntry", params);
         } catch (XmlRpcException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
