@@ -46,7 +46,7 @@ public class Client implements Runnable{
                 case 1:
                     System.out.println("Input is 1"); addEntry(); break; //add
                 case 2:
-                    System.out.println("Input is 2"); getListOfEvents(); break; //list
+                    System.out.println("Input is 2"); getListOfEvents(false); break; //list
                 case 3:
                     System.out.println("Input is 3"); deleteEntry(); break; //remove entry
                 case 4:
@@ -181,8 +181,8 @@ public class Client implements Runnable{
 
     }
 
-    public void getListOfEvents(){
-        if(isOnline){
+    public void getListOfEvents(boolean getFromAnotherNode){
+        if(getFromAnotherNode){   //only when join the network
             XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
             try {
                 config.setServerURL(new URL(StringToURL(firstActiveNode)));
@@ -195,10 +195,14 @@ public class Client implements Runnable{
             Object[] params = new Object[] {};
 
             try {
-               String s = (String) client.execute("Calendar.getList", params);
+                Object[] list = (Object[]) client.execute("Calendar.getList", params);
+                for (int i = 0; i < list.length; i++){
+                    System.out.println(list[i].toString());
+                }
                 } catch (XmlRpcException e) {
                 e.printStackTrace();
             }
+
         } else {
             File file = new File("Calendar.txt");
             BufferedReader br = null;
@@ -243,7 +247,7 @@ public class Client implements Runnable{
         }
         firstActiveNode = ipAddress;
         activeNodes.add(firstActiveNode);
-        getListOfEvents();
+        getListOfEvents(true);
     }
     public void signOff(){
         isOnline = false;
