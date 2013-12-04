@@ -35,7 +35,6 @@ public class Calendar {
 
     public String getList(){
         //read from the file and create one string and send
-
         return "hello";
     }
 

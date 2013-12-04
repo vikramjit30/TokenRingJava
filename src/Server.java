@@ -17,26 +17,16 @@ public class Server implements Runnable {
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
 
         PropertyHandlerMapping phm = new PropertyHandlerMapping();
-          /* Load handler definitions from a property file.
-           * The property file might look like:
-           *   Calculator=org.apache.xmlrpc.demo.Calculator
-           *   org.apache.xmlrpc.demo.proxy.Adder=org.apache.xmlrpc.demo.proxy.AdderImpl
-           */
+
         try {
             phm.addHandler("Calculator", Calculator.class);
             phm.addHandler("Calendar", Calendar.class);
             phm.addHandler("Node", Node.class);
 
         } catch (XmlRpcException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
-           /* You may also provide the handler classes directly,
-           * like this:
-           * phm.addHandler("Calculator",
-           *     org.apache.xmlrpc.demo.Calculator.class);
-           * phm.addHandler(org.apache.xmlrpc.demo.proxy.Adder.class.getName(),
-           *     org.apache.xmlrpc.demo.proxy.AdderImpl.class);
-           */
+
         xmlRpcServer.setHandlerMapping(phm);
         XmlRpcServerConfigImpl serverConfig =
                 (XmlRpcServerConfigImpl) xmlRpcServer.getConfig();
@@ -46,7 +36,7 @@ public class Server implements Runnable {
         try {
             webServer.start();
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 }

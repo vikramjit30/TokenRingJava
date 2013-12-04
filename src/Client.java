@@ -64,39 +64,39 @@ public class Client implements Runnable{
     }
 
 
-    public void test(){
-        try{
-
-            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-            config.setServerURL(new URL(StringToURL(firstActiveNode)));
-            XmlRpcClient client = new XmlRpcClient();
-            client.setConfig(config);
-
-            Object[] params = new Object[]{new Integer(33), new Integer(100)};
-            System.out.println("Test: get result from the server(Calculator.add)");
-            Integer result = (Integer) client.execute("Calculator.add", params);
-            System.out.println(result);
-//          test for sending String to the server
+//    public void test(){
+//        try{
+//
+//            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+//            config.setServerURL(new URL(StringToURL(firstActiveNode)));
+//            XmlRpcClient client = new XmlRpcClient();
+//            client.setConfig(config);
+//
+//            Object[] params = new Object[]{new Integer(33), new Integer(100)};
+//            System.out.println("Test: get result from the server(Calculator.add)");
+//            Integer result = (Integer) client.execute("Calculator.add", params);
+//            System.out.println(result);
+//         // test for sending String to the server
 //          params[0] = new Integer(42);
 //          params[1] = new String("test");
 //
 //          a = (String) client.execute("CalendarWrite.Test", params);
 //          System.out.println("Response: " + a);
-//          test for sending CalendarEntry
-////        params[0] = new CalendarEntry(123, "name");
+//      //  test for sending CalendarEntry
+//           params[0] = new CalendarEntry(123, "name");
 //          params[1] = new CalendarEntry(1234, "name2");
 //          a = (String) client.execute("Calendar.join", params);
-//          failed. Only standard types
+//         // failed. Only standard types
 //
 //          testing reading an entry from File
 //            Object[] params2 = new Object[]{"example"};
 //            int a = (Integer) client.execute("Calendar.addEntry", params2);
 //            System.out.println("if the result equals to 42 it works right: " + a);
-            }
-        catch (Exception exception) {
-            System.err.println("Client: " + exception.toString());
-        }
-    }
+//            }
+//        catch (Exception exception) {
+//            System.err.println("Client: " + exception.toString());
+//        }
+//    }
     public void initialize(){
         //To do:
         // 1. parse IP address as argument  ... done!
