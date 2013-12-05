@@ -5,15 +5,15 @@ import org.apache.xmlrpc.server.XmlRpcServerConfigImpl;
 import org.apache.xmlrpc.webserver.WebServer;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
 
 public class Server implements Runnable {
 
-    private static final int port = 8764;
+    private static final int PORT = 8764;
 
     @Override
     public void run() {
-        WebServer webServer = new WebServer(port);
+        WebServer webServer = new WebServer(PORT);
 
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
 

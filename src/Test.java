@@ -18,13 +18,13 @@ public class Test {
         try {
             System.out.println(InetAddress.getLocalHost().getHostAddress());
         } catch (UnknownHostException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
         Enumeration e= null;
         try {
             e = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException e1) {
-            e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e1.printStackTrace();
         }
         while(e.hasMoreElements())
         {

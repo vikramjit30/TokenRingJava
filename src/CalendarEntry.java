@@ -20,7 +20,7 @@ public class CalendarEntry {
         id++;
     }
 
-    public void writeToFile(){
+    public void writeToFile() {
         //1. Write new line to file as date/time/../comment
         String newEvent = (Integer.toString(id) + "/" + date + "/" + time + "/" +
                 duration + "/" + header + "/" + comment);
@@ -28,15 +28,15 @@ public class CalendarEntry {
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
             out.println(newEvent);
-        }catch (IOException e) {
+        } catch (IOException e) {
             System.err.println(e);
-        }finally{
-            if(out != null){
+        } finally {
+            if (out != null) {
                 out.close();
             }
         }
     }
-    public String makeString(){
+    public String makeString() {
         return (Integer.toString(id) + "/" + date + "/" + time + "/" +
                 duration + "/" + header + "/" + comment);
     }
