@@ -123,13 +123,6 @@ public class Client implements Runnable {
                 e.printStackTrace();
             }
         }
-        String filename = "Nodes.txt";
-        try {
-            FileWriter fw = new FileWriter(filename, true);
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public String stringToURL(String s) {
@@ -163,7 +156,7 @@ public class Client implements Runnable {
                 System.out.println("IO error!");
                 System.exit(1);
             }
-            System.out.println("Input header");
+            System.out.println("Input header (must be unique)");
             String header = null;
             try {
                 header = br.readLine();
@@ -253,9 +246,20 @@ public class Client implements Runnable {
         }
     }
     public void deleteEntry() {
+        getListOfEvents(false);
+        System.out.println("Which entry do you want to delete?");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String numberOfLine = null;
+        try {
+            numberOfLine = br.readLine();
+        } catch (IOException e) {
+            System.out.println("IO error!");
+            System.exit(1);
+        }
 
-        //1. code for reading an entry from standard input
-        //2. find in our text file
+
+        //1. code for reading an entry from standard input ..done!
+        //2. find in our text file   ..done
         //3. send a message to all active nodes about deleting Entry
     }
     public void join() {
@@ -296,27 +300,30 @@ public class Client implements Runnable {
         }
     }
     public void signOff() {
-        isOnline = false;
-        try {
-            String ownIpAddress = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+        if (isOnline) {
+            isOnline = false;
+            //ArrayList <String> activeNodes
+            //get ipadress        ..done!
+            //get list of active nodes   ..done!
+            //call function from all nodes Node.delete
+
+            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+            try {
+                config.setServerURL(new URL(stringToURL(firstActiveNode)));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            XmlRpcClient client = new XmlRpcClient();
+            client.setConfig(config);
+            Object[] params = new Object[]{getOwnIp()};
+            try {
+                client.execute("Node.delete", params);
+            } catch (XmlRpcException e) {
+                e.printStackTrace();
+            }
+        }  else {
+            System.out.println("Node is offline! Operation is not allowed");
         }
-        //ArrayList <String> activeNodes
-        //get ipadress        ..done!
-        //get list of active nodes   ..done!
-        //call function from all nodes Node.delete
-
-        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-        try {
-            config.setServerURL(new URL(stringToURL(firstActiveNode)));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        XmlRpcClient client = new XmlRpcClient();
-        client.setConfig(config);
-
-
 
     }
     public void modifyEntry() {
@@ -345,6 +352,15 @@ public class Client implements Runnable {
 
         XmlRpcClient client = new XmlRpcClient();
         client.setConfig(config);
+        Object[] params = new Object[]{getOwnIp()};
+        try {
+            client.execute("Node.add", params);
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getOwnIp(){
         String ownIpAddress = null;
         try {
             ownIpAddress = InetAddress.getLocalHost().getHostAddress();
@@ -352,11 +368,6 @@ public class Client implements Runnable {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        Object[] params = new Object[]{ownIpAddress};
-        try {
-            client.execute("Node.add", params);
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
-        }
+        return ownIpAddress;
     }
 }
