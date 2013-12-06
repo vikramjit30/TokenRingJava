@@ -1,6 +1,7 @@
 //auxiliary class for implementing of XMLRPC-methods
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class Calendar {
@@ -21,10 +22,29 @@ public class Calendar {
         return 42;
     }
 
-    public void deleteEntry(String s) {
-        System.out.println("Deleting entry...Done!");
-        //search in file line by line
-        //delete line
+    public void deleteEntry(String lineToRemove) {
+
+        String currentLine = null;
+        ArrayList<String> lines = new ArrayList<String>();
+        File file = new File("Calendar.txt");
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            while ((currentLine = br.readLine()) != null) {
+                if (currentLine.equals(lineToRemove))continue;
+                lines.add(currentLine);
+            }
+
+            PrintWriter writer = new PrintWriter(file);
+            writer.print("");
+            writer.close();
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
+            for (int i = 0; i < lines.size(); i++) {
+                out.println(lines.get(i));
+            }
+            out.close();
+        } catch (IOException e) {
+              e.printStackTrace();
+        }
     }
 
 //    public void modifyEntry(String s){

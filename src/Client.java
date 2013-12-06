@@ -2,6 +2,7 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -256,30 +257,43 @@ public class Client implements Runnable {
         int numLine = Integer.parseInt(numberOfLine);
 
         File file = new File("Calendar.txt");
-        br = null;
         try {
             br = new BufferedReader(new FileReader(file));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        String line;
+        String lineToRemove = null;
         try {
             while ((numLine--) != 0) {
-                line = br.readLine();
+                lineToRemove = br.readLine();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
+
+            System.out.println(lineToRemove);
             br.close();
+            String currentLine = null;
+            ArrayList<String> lines = new ArrayList<String>();
+            br = new BufferedReader(new FileReader(file));
+            while ((currentLine = br.readLine()) != null) {
+                if (currentLine.equals(lineToRemove))continue;
+                lines.add(currentLine);
+            }
+
+            PrintWriter writer = new PrintWriter(file);
+            writer.print("");
+            writer.close();
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
+            for (int i = 0; i < lines.size(); i++) {
+                out.println(lines.get(i));
+            }
+            out.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+        for (String s:activeNodes) {
+            deleteOverRPC(s, lineToRemove);
+        }
 
-
-        //1. code for reading an entry from standard input ..done!
-        //2. find in our text file   ..done
-        //3. send a message to all active nodes about deleting Entry
     }
     public void join() {
         isOnline = true;
