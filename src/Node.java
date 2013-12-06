@@ -39,6 +39,11 @@ public class Node {
 //       } catch (IOException e) {
 //           e.printStackTrace();
 //       }
+       try {
+           result.add(InetAddress.getLocalHost().getHostAddress());
+       } catch (UnknownHostException e) {
+           e.printStackTrace();
+       }
        return result;
    }
 

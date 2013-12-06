@@ -1,3 +1,4 @@
+import java.io.*;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -20,22 +21,28 @@ public class Test {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        Enumeration e= null;
+        int numLine = 4;
+        File file = new File("Calendar.txt");
+        BufferedReader br = null;
         try {
-            e = NetworkInterface.getNetworkInterfaces();
-        } catch (SocketException e1) {
-            e1.printStackTrace();
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        while(e.hasMoreElements())
-        {
-            NetworkInterface n=(NetworkInterface) e.nextElement();
-            Enumeration ee = n.getInetAddresses();
-            while(ee.hasMoreElements())
-            {
-                InetAddress i= (InetAddress) ee.nextElement();
-                if(i.isLoopbackAddress()) continue;
-                System.out.println(i.getHostAddress());
+        String line = null;
+        try {
+            while ((numLine--) != 0) {
+                line = br.readLine();
+
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        try {
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(line);
     }
 }

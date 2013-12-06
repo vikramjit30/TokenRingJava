@@ -34,7 +34,7 @@ public class Client implements Runnable {
 
         while (true) {
             System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n" +
-                    " 3 - modify an event \n 4 - delete an event \n 5 - join the network \n 6 - sign off" +
+                    "3 - delete an event \n 4 - join the network \n 5 - sign off" +
                     "\n 0 - exit ");
             Scanner sc = new Scanner(System.in);
             int choice = sc.nextInt();
@@ -52,14 +52,10 @@ public class Client implements Runnable {
                     deleteEntry();
                     break; //remove entry
                 case 4:
-                    System.out.println("Input is 4");
-                    modifyEntry();
-                    break; // modify entry
-                case 5:
                     System.out.println("Input is 5");
                     join();
                     break; // join to the network
-                case 6:
+                case 5:
                     System.out.println("Input is 6");
                     signOff();
                     break; // sign off the network
@@ -247,7 +243,7 @@ public class Client implements Runnable {
     }
     public void deleteEntry() {
         getListOfEvents(false);
-        System.out.println("Which entry do you want to delete?");
+        System.out.println("Which entry do you want to delete? Input the number.");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String numberOfLine = null;
         try {
@@ -255,6 +251,29 @@ public class Client implements Runnable {
         } catch (IOException e) {
             System.out.println("IO error!");
             System.exit(1);
+        }
+
+        int numLine = Integer.parseInt(numberOfLine);
+
+        File file = new File("Calendar.txt");
+        br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String line;
+        try {
+            while ((numLine--) != 0) {
+                line = br.readLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
 
@@ -296,7 +315,8 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
         for (String s:activeNodes) {
-            joinOverRPC();
+            String address = s;
+            joinOverRPC(address);
         }
     }
     public void signOff() {
@@ -326,9 +346,7 @@ public class Client implements Runnable {
         }
 
     }
-    public void modifyEntry() {
-        //some code
-    }
+
     public void addOverRPC(String ipAddress, String message) {
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         try {
@@ -347,9 +365,13 @@ public class Client implements Runnable {
         }
     }
 
-    public void joinOverRPC(){
+    public void joinOverRPC(String ipAddress) {
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-
+        try {
+            config.setServerURL(new URL(stringToURL(ipAddress)));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         XmlRpcClient client = new XmlRpcClient();
         client.setConfig(config);
         Object[] params = new Object[]{getOwnIp()};
@@ -359,15 +381,32 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
     }
+    public void deleteOverRPC(String ipAddress, String message) {
+        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        try {
+            config.setServerURL(new URL(stringToURL(ipAddress)));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        XmlRpcClient client = new XmlRpcClient();
+        client.setConfig(config);
 
-    public String getOwnIp(){
+        Object[] params = new Object[]{message};
+        try {
+            client.execute("Calendar.deleteEntry", params);
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getOwnIp() {
         String ownIpAddress = null;
         try {
             ownIpAddress = InetAddress.getLocalHost().getHostAddress();
-
-        } catch (UnknownHostException e) {
+            } catch (UnknownHostException e) {
             e.printStackTrace();
-        }
+            }
         return ownIpAddress;
     }
+
 }
