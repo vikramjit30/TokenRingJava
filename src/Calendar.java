@@ -22,7 +22,7 @@ public class Calendar {
         return 42;
     }
 
-    public void deleteEntry(String lineToRemove) {
+    public int deleteEntry(String lineToRemove) {
 
         String currentLine = null;
         ArrayList<String> lines = new ArrayList<String>();
@@ -45,11 +45,9 @@ public class Calendar {
         } catch (IOException e) {
               e.printStackTrace();
         }
+        return 42;
     }
 
-//    public void modifyEntry(String s){
-//        System.out.println("Modifying entry...Done!");
-//    }
 
     public Vector getList() {
         //read from the file and create one string and send

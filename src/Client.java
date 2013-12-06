@@ -2,7 +2,7 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
-import javax.swing.*;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
@@ -35,7 +35,7 @@ public class Client implements Runnable {
 
         while (true) {
             System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n" +
-                    "3 - delete an event \n 4 - join the network \n 5 - sign off" +
+                    " 3 - delete an event \n 4 - join the network \n 5 - sign off" +
                     "\n 0 - exit ");
             Scanner sc = new Scanner(System.in);
             int choice = sc.nextInt();
@@ -53,13 +53,16 @@ public class Client implements Runnable {
                     deleteEntry();
                     break; //remove entry
                 case 4:
-                    System.out.println("Input is 5");
+                    System.out.println("Input is 4");
                     join();
                     break; // join to the network
                 case 5:
-                    System.out.println("Input is 6");
+                    System.out.println("Input is 5");
                     signOff();
                     break; // sign off the network
+                case 6:
+                    listNodes();
+                    break;
                 case 0:
                     System.exit(0);
                     break;
@@ -68,47 +71,14 @@ public class Client implements Runnable {
             }
         }
     }
-//    public void test(){
-//        try{
-//
-//            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-//            config.setServerURL(new URL(stringToURL(firstActiveNode)));
-//            XmlRpcClient client = new XmlRpcClient();
-//            client.setConfig(config);
-//
-//            Object[] params = new Object[]{new Integer(33), new Integer(100)};
-//            System.out.println("Test: get result from the server(Calculator.add)");
-//            Integer result = (Integer) client.execute("Calculator.add", params);
-//            System.out.println(result);
-//         // test for sending String to the server
-//          params[0] = new Integer(42);
-//          params[1] = new String("test");
-//
-//          a = (String) client.execute("CalendarWrite.Test", params);
-//          System.out.println("Response: " + a);
-//      //  test for sending CalendarEntry
-//           params[0] = new CalendarEntry(123, "name");
-//          params[1] = new CalendarEntry(1234, "name2");
-//          a = (String) client.execute("Calendar.join", params);
-//         // failed. Only standard types
-//
-//          testing reading an entry from File
-//            Object[] params2 = new Object[]{"example"};
-//            int a = (Integer) client.execute("Calendar.addEntry", params2);
-//            System.out.println("if the result equals to 42 it works right: " + a);
-//            }
-//        catch (Exception exception) {
-//            System.err.println("Client: " + exception.toString());
-//        }
-//    }
+
+    private void listNodes() {
+        for (int i = 0; i < activeNodes.size(); i++) {
+            System.out.println(activeNodes.get(i));
+        }
+    }
+
     public void initialize() {
-        //To do:
-        // 1. parse IP address as argument  ... done!
-        // 2. create file...             ....done!
-        // 3. call function get_all events from the IP-address   ..done!
-        // 4. put all events in file
-        // 5. get the list of all online nodes from IP_address
-        //
         if (new File(System.getProperty("user.dir") + "Calendar.txt").isFile()) {
             //do nothing
         }   else {
@@ -203,8 +173,18 @@ public class Client implements Runnable {
                 Object[] list =
                         (Object[]) client.execute("Calendar.getList", params);
                 PrintWriter out = null;
+                PrintWriter writer = null;
+                try {
+                    writer = new PrintWriter(new FileWriter("Calendar.txt"));
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                writer.print("");
+                writer.close();
                 for (int i = 0; i < list.length; i++) {
                     try {
+
+                        System.out.println("List length:" + list.length);
                         out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
                         out.println(list[i].toString());
                     }  catch (IOException e) {
@@ -306,41 +286,40 @@ public class Client implements Runnable {
             System.out.println("IO error!");
             System.exit(1);
         }
-        firstActiveNode = ipAddress;
-        getListOfEvents(true);
-        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-        try {
-            config.setServerURL(new URL(stringToURL(firstActiveNode)));
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        XmlRpcClient client = new XmlRpcClient();
-        client.setConfig(config);
-
-        Object[] params = new Object[] {};
-        try {
-            Object[] listOfNodes =
-                    (Object[]) client.execute("Node.getListOfActiveNode", params);
-            PrintWriter out = null;
-            for (int i = 0; i < listOfNodes.length; i++) {
-                activeNodes.add(listOfNodes[i].toString());
+        if (!ipAddress.equals("127.0.0.1")){
+            firstActiveNode = ipAddress;
+            getListOfEvents(true);
+            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+            try {
+                config.setServerURL(new URL(stringToURL(firstActiveNode)));
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
-        } catch (XmlRpcException e) {
-            e.printStackTrace();
+            XmlRpcClient client = new XmlRpcClient();
+            client.setConfig(config);
+
+            Object[] params = new Object[] {};
+            try {
+                Object[] listOfNodes =
+                        (Object[]) client.execute("Node.getListOfActiveNode", params);
+
+                for (int i = 0; i < listOfNodes.length; i++) {
+                    activeNodes.add(listOfNodes[i].toString());
+                }
+            } catch (XmlRpcException e) {
+                e.printStackTrace();
+            }
+            for (String s:activeNodes) {
+               joinOverRPC(s);
+            }
+        } else {
+            isOnline = true;
         }
-        for (String s:activeNodes) {
-            String address = s;
-            joinOverRPC(address);
-        }
+
     }
     public void signOff() {
         if (isOnline) {
             isOnline = false;
-            //ArrayList <String> activeNodes
-            //get ipadress        ..done!
-            //get list of active nodes   ..done!
-            //call function from all nodes Node.delete
-
             XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
             try {
                 config.setServerURL(new URL(stringToURL(firstActiveNode)));
