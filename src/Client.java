@@ -28,39 +28,42 @@ public class Client implements Runnable {
     @Override
     public void run() {
 
-        System.out.println("Client starts");
-        initialize();
+       initialize();
 
-        //test();
-
-        while (true) {
+       while (true) {
+            if (isOnline) {
+                System.out.println("\n Node is online");
+            } else {
+                System.out.println("\n Node is offline");
+            }
             System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n" +
                     " 3 - delete an event \n 4 - join the network \n 5 - sign off" +
-                    "\n 0 - exit ");
+                    "\n 6 - list of all active nodes \n 0 - exit ");
             Scanner sc = new Scanner(System.in);
             int choice = sc.nextInt();
             switch(choice) {
                 case 1:
-                    System.out.println("Input is 1");
+                    System.out.println("Adding a new event");
                     addEntry();
                     break; //add
                 case 2:
-                    System.out.println("Input is 2");
+                    System.out.println("Getting list of all events");
                     getListOfEvents(false);
                     break; //list
                 case 3:
-                    System.out.println("Input is 3");
+                    System.out.println("Deleting an event");
                     deleteEntry();
                     break; //remove entry
                 case 4:
-                    System.out.println("Input is 4");
+                    System.out.println("Joining the network");
                     join();
                     break; // join to the network
                 case 5:
-                    System.out.println("Input is 5");
+                    System.out.println("Signing off");
                     signOff();
                     break; // sign off the network
                 case 6:
+                    System.out.println("Getting list of all active nodes");
                     listNodes();
                     break;
                 case 0:
@@ -73,9 +76,14 @@ public class Client implements Runnable {
     }
 
     private void listNodes() {
-        for (int i = 0; i < activeNodes.size(); i++) {
-            System.out.println(activeNodes.get(i));
+        if (isOnline){
+            for (int i = 0; i < activeNodes.size(); i++) {
+                System.out.println(activeNodes.get(i));
+            }
+        } else {
+            System.out.println("Node is offline.");
         }
+
     }
 
     public void initialize() {
@@ -183,8 +191,6 @@ public class Client implements Runnable {
                 writer.close();
                 for (int i = 0; i < list.length; i++) {
                     try {
-
-                        System.out.println("List length:" + list.length);
                         out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
                         out.println(list[i].toString());
                     }  catch (IOException e) {
@@ -281,9 +287,10 @@ public class Client implements Runnable {
 
     }
     public void join() {
-        if (!isOnline){
+        if (!isOnline) {
             isOnline = true;
             System.out.println("Input IP-address of active node");
+            System.out.println("If it is the first online node input 127.0.0.1");
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             String ipAddress = null;
             try {
@@ -292,7 +299,7 @@ public class Client implements Runnable {
                 System.out.println("IO error!");
                 System.exit(1);
             }
-            if (!ipAddress.equals("127.0.0.1")){
+            if (!ipAddress.equals("127.0.0.1")) {
                 firstActiveNode = ipAddress;
                 getListOfEvents(true);
                 XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
@@ -324,30 +331,34 @@ public class Client implements Runnable {
         } else  {
             System.out.println("Node is already online.");
         }
-
-
     }
+
     public void signOff() {
         if (isOnline) {
             isOnline = false;
-            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-            try {
-                config.setServerURL(new URL(stringToURL(firstActiveNode)));
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-            XmlRpcClient client = new XmlRpcClient();
-            client.setConfig(config);
-            Object[] params = new Object[]{getOwnIp()};
-            try {
-                client.execute("Node.delete", params);
-            } catch (XmlRpcException e) {
-                e.printStackTrace();
+            for (String s:activeNodes){
+                signOffOverRPC(s);
             }
         }  else {
             System.out.println("Node is already offline.");
         }
+    }
 
+    public void signOffOverRPC(String ipAddress){
+        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        try {
+            config.setServerURL(new URL(stringToURL(ipAddress)));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        XmlRpcClient client = new XmlRpcClient();
+        client.setConfig(config);
+        Object[] params = new Object[]{getOwnIp()};
+        try {
+            client.execute("Node.delete", params);
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addOverRPC(String ipAddress, String message) {
