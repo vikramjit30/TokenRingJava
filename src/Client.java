@@ -177,7 +177,7 @@ public class Client implements Runnable {
                 try {
                     writer = new PrintWriter(new FileWriter("Calendar.txt"));
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    e.printStackTrace();
                 }
                 writer.print("");
                 writer.close();
@@ -223,98 +223,108 @@ public class Client implements Runnable {
         }
     }
     public void deleteEntry() {
-        getListOfEvents(false);
-        System.out.println("Which entry do you want to delete? Input the number.");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String numberOfLine = null;
-        try {
-            numberOfLine = br.readLine();
-        } catch (IOException e) {
-            System.out.println("IO error!");
-            System.exit(1);
-        }
-
-        int numLine = Integer.parseInt(numberOfLine);
-
-        File file = new File("Calendar.txt");
-        try {
-            br = new BufferedReader(new FileReader(file));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        String lineToRemove = null;
-        try {
-            while ((numLine--) != 0) {
-                lineToRemove = br.readLine();
-            }
-
-            System.out.println(lineToRemove);
-            br.close();
-            String currentLine = null;
-            ArrayList<String> lines = new ArrayList<String>();
-            br = new BufferedReader(new FileReader(file));
-            while ((currentLine = br.readLine()) != null) {
-                if (currentLine.equals(lineToRemove))continue;
-                lines.add(currentLine);
-            }
-
-            PrintWriter writer = new PrintWriter(file);
-            writer.print("");
-            writer.close();
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
-            for (int i = 0; i < lines.size(); i++) {
-                out.println(lines.get(i));
-            }
-            out.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        for (String s:activeNodes) {
-            deleteOverRPC(s, lineToRemove);
-        }
-
-    }
-    public void join() {
-        isOnline = true;
-        System.out.println("Input IP-address of active node");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String ipAddress = null;
-        try {
-            ipAddress = br.readLine();
-        } catch (IOException e) {
-            System.out.println("IO error!");
-            System.exit(1);
-        }
-        if (!ipAddress.equals("127.0.0.1")){
-            firstActiveNode = ipAddress;
-            getListOfEvents(true);
-            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        if (isOnline) {
+            getListOfEvents(false);
+            System.out.println("Which entry do you want to delete? Input the number.");
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String numberOfLine = null;
             try {
-                config.setServerURL(new URL(stringToURL(firstActiveNode)));
-            } catch (MalformedURLException e) {
+                numberOfLine = br.readLine();
+            } catch (IOException e) {
+                System.out.println("IO error!");
+                System.exit(1);
+            }
+
+            int numLine = Integer.parseInt(numberOfLine);
+
+            File file = new File("Calendar.txt");
+            try {
+                br = new BufferedReader(new FileReader(file));
+            } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            XmlRpcClient client = new XmlRpcClient();
-            client.setConfig(config);
-
-            Object[] params = new Object[] {};
+            String lineToRemove = null;
             try {
-                Object[] listOfNodes =
-                        (Object[]) client.execute("Node.getListOfActiveNode", params);
-
-                for (int i = 0; i < listOfNodes.length; i++) {
-                    activeNodes.add(listOfNodes[i].toString());
+                while ((numLine--) != 0) {
+                    lineToRemove = br.readLine();
                 }
-            } catch (XmlRpcException e) {
+
+                System.out.println(lineToRemove);
+                br.close();
+                String currentLine = null;
+                ArrayList<String> lines = new ArrayList<String>();
+                br = new BufferedReader(new FileReader(file));
+                while ((currentLine = br.readLine()) != null) {
+                    if (currentLine.equals(lineToRemove))continue;
+                    lines.add(currentLine);
+                }
+
+                PrintWriter writer = new PrintWriter(file);
+                writer.print("");
+                writer.close();
+                PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
+                for (int i = 0; i < lines.size(); i++) {
+                    out.println(lines.get(i));
+                }
+                out.close();
+
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             for (String s:activeNodes) {
-               joinOverRPC(s);
+                deleteOverRPC(s, lineToRemove);
             }
         } else {
-            isOnline = true;
+            System.out.println("Node is offline! Operation is not allowed");
         }
+
+
+    }
+    public void join() {
+        if (!isOnline){
+            isOnline = true;
+            System.out.println("Input IP-address of active node");
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+            String ipAddress = null;
+            try {
+                ipAddress = br.readLine();
+            } catch (IOException e) {
+                System.out.println("IO error!");
+                System.exit(1);
+            }
+            if (!ipAddress.equals("127.0.0.1")){
+                firstActiveNode = ipAddress;
+                getListOfEvents(true);
+                XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+                try {
+                    config.setServerURL(new URL(stringToURL(firstActiveNode)));
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                XmlRpcClient client = new XmlRpcClient();
+                client.setConfig(config);
+
+                Object[] params = new Object[] {};
+                try {
+                    Object[] listOfNodes =
+                            (Object[]) client.execute("Node.getListOfActiveNode", params);
+
+                    for (int i = 0; i < listOfNodes.length; i++) {
+                        activeNodes.add(listOfNodes[i].toString());
+                    }
+                } catch (XmlRpcException e) {
+                    e.printStackTrace();
+                }
+                for (String s:activeNodes) {
+                    joinOverRPC(s);
+                }
+            } else {
+                isOnline = true;
+            }
+        } else  {
+            System.out.println("Node is already online.");
+        }
+
 
     }
     public void signOff() {
@@ -335,7 +345,7 @@ public class Client implements Runnable {
                 e.printStackTrace();
             }
         }  else {
-            System.out.println("Node is offline! Operation is not allowed");
+            System.out.println("Node is already offline.");
         }
 
     }

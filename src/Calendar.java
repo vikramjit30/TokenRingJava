@@ -7,7 +7,7 @@ import java.util.Vector;
 public class Calendar {
 
     public int addEntry(String s) {
-        System.out.println("Adding entry...Done!");
+        //System.out.println("Adding entry...Done!");
         PrintWriter out = null;
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
