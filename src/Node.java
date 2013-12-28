@@ -1,6 +1,3 @@
-import java.io.*;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Vector;
 
 public class Node {
@@ -9,11 +6,7 @@ public class Node {
        for (int i = 0; i < Client.activeNodes.size(); i++) {
             result.add(Client.activeNodes.get(i));
        }
-       try {
-           result.add(InetAddress.getLocalHost().getHostAddress());
-       } catch (UnknownHostException e) {
-           e.printStackTrace();
-       }
+       result.add(Client.ownIpAddress);
        return result;
    }
 

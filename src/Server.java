@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class Server implements Runnable {
 
-    private static final int PORT = 8764;
+    private static final int PORT = 8763;
 
     @Override
     public void run() {

@@ -22,6 +22,17 @@ public class Calendar {
         return 42;
     }
 
+    public Vector test(String s){
+
+        System.out.println("server works");
+        Vector result = new Vector();
+        result.add(s);
+        result.add(new String("java"));
+        result.add(new String("javajava"));
+        result.add(new String("javavjaavava"));
+        return result;
+    }
+
     public int deleteEntry(String lineToRemove) {
 
         String currentLine = null;

@@ -1,4 +1,4 @@
-import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.*;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
@@ -14,6 +14,7 @@ import java.util.Scanner;
 public class Client implements Runnable {
 
     public static ArrayList<String> activeNodes;
+    public static String ownIpAddress;
     private String firstActiveNode;     //IP-address of the first online node
 
     private boolean isOnline = false;
@@ -31,11 +32,21 @@ public class Client implements Runnable {
        initialize();
 
        while (true) {
-            if (isOnline) {
-                System.out.println("\n Node is online");
-            } else {
-                System.out.println("\n Node is offline");
-            }
+
+           System.out.println("-----------------------");
+           System.out.println("Own IP Address = " + ownIpAddress);
+           if (isOnline) {
+               System.out.println("Node's status: online");
+           } else {
+               System.out.println("Node's status: offline");
+           }
+           System.out.println("-----------------------");
+           if (isOnline){
+               System.out.println("List of all online nodes:");
+               for (int i = 0; i < activeNodes.size(); i++) {
+                   System.out.println(activeNodes.get(i).toString());
+               }
+           }
             System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n" +
                     " 3 - delete an event \n 4 - join the network \n 5 - sign off" +
                     "\n 6 - list of all active nodes \n 0 - exit ");
@@ -66,6 +77,10 @@ public class Client implements Runnable {
                     System.out.println("Getting list of all active nodes");
                     listNodes();
                     break;
+                case 7:
+                    System.out.println("Test");
+                    test();
+                    break;
                 case 0:
                     System.exit(0);
                     break;
@@ -73,6 +88,41 @@ public class Client implements Runnable {
                     System.out.println("No input!");
             }
         }
+    }
+
+    private void test() {
+
+        System.out.println("Input IP-address of active node");
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        String ipAddress = null;
+        String message = "Fuck";
+        try {
+            ipAddress = br.readLine();
+        } catch (IOException e) {
+            System.out.println("IO error!");
+            System.exit(1);
+        }
+
+        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        try {
+            config.setServerURL(new URL(stringToURL(ipAddress)));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        XmlRpcClient client = new XmlRpcClient();
+        client.setConfig(config);
+        Object[] params = new Object[]{message};
+        try {
+            Object[] result =
+                    (Object[]) client.execute("Calendar.test", params);
+            for (int i = 0; i < result.length; i++) {
+                System.out.println(result[i].toString());
+            }
+            System.out.println("-------------------");
+        } catch (XmlRpcException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void listNodes() {
@@ -87,6 +137,12 @@ public class Client implements Runnable {
     }
 
     public void initialize() {
+
+        try {
+            ownIpAddress = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
         if (new File(System.getProperty("user.dir") + "Calendar.txt").isFile()) {
             //do nothing
         }   else {
@@ -101,7 +157,7 @@ public class Client implements Runnable {
     }
 
     public String stringToURL(String s) {
-        return ("http://" + s + ":8764/xmlrpc");
+        return ("http://" + s + ":8763/xmlrpc");
     }
 
     public void addEntry() {
@@ -353,7 +409,7 @@ public class Client implements Runnable {
         }
         XmlRpcClient client = new XmlRpcClient();
         client.setConfig(config);
-        Object[] params = new Object[]{getOwnIp()};
+        Object[] params = new Object[]{ownIpAddress};
         try {
             client.execute("Node.delete", params);
         } catch (XmlRpcException e) {
@@ -388,7 +444,7 @@ public class Client implements Runnable {
         }
         XmlRpcClient client = new XmlRpcClient();
         client.setConfig(config);
-        Object[] params = new Object[]{getOwnIp()};
+        Object[] params = new Object[]{ownIpAddress};
         try {
             client.execute("Node.add", params);
         } catch (XmlRpcException e) {
@@ -411,16 +467,6 @@ public class Client implements Runnable {
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }
-    }
-
-    public String getOwnIp() {
-        String ownIpAddress = null;
-        try {
-            ownIpAddress = InetAddress.getLocalHost().getHostAddress();
-            } catch (UnknownHostException e) {
-            e.printStackTrace();
-            }
-        return ownIpAddress;
     }
 
 }
