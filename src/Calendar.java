@@ -7,7 +7,7 @@ import java.util.Vector;
 public class Calendar {
 
     public int addEntry(String s) {
-        //System.out.println("Adding entry...Done!");
+        System.out.println("Adding new event... ");
         PrintWriter out = null;
         try {
             out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
@@ -19,22 +19,13 @@ public class Calendar {
                 out.close();
             }
         }
+        System.out.println("Done!");
         return 42;
-    }
-
-    public Vector test(String s){
-
-        System.out.println("server works");
-        Vector result = new Vector();
-        result.add(s);
-        result.add(new String("java"));
-        result.add(new String("javajava"));
-        result.add(new String("javavjaavava"));
-        return result;
     }
 
     public int deleteEntry(String lineToRemove) {
 
+        System.out.println("Deleting event... ");
         String currentLine = null;
         ArrayList<String> lines = new ArrayList<String>();
         File file = new File("Calendar.txt");
@@ -48,7 +39,7 @@ public class Calendar {
             PrintWriter writer = new PrintWriter(file);
             writer.print("");
             writer.close();
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
+            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));   //true - false
             for (int i = 0; i < lines.size(); i++) {
                 out.println(lines.get(i));
             }
@@ -56,12 +47,13 @@ public class Calendar {
         } catch (IOException e) {
               e.printStackTrace();
         }
+        System.out.println("Done!");
         return 42;
     }
 
 
     public Vector getList() {
-        //read from the file and create one string and send
+        System.out.println("Returning list of all events...");
         Vector result = new Vector();
         File file = new File("Calendar.txt");
         BufferedReader br = null;
@@ -83,6 +75,7 @@ public class Calendar {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("Done!");
         return result;
     }
 

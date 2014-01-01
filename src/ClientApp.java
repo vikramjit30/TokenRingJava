@@ -1,12 +1,16 @@
+import java.util.Scanner;
 
 public class ClientApp {
 
     public static void main(String[] args) {
 
-        Thread serverThread = new Thread(new Server());
-        serverThread.start();
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Input the port:");
+        Client.setPORT(sc.nextInt());
         Thread clientThread = new Thread(new Client());
         clientThread.start();
-        //Use port 8764!
+        Thread serverThread = new Thread(new Server());
+        serverThread.start();
+
     }
 }

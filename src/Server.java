@@ -9,18 +9,17 @@ import java.io.IOException;
 
 public class Server implements Runnable {
 
-    private static final int PORT = 8763;
+
 
     @Override
     public void run() {
-        WebServer webServer = new WebServer(PORT);
+        WebServer webServer = new WebServer(Client.getPort());
 
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
 
         PropertyHandlerMapping phm = new PropertyHandlerMapping();
 
         try {
-            phm.addHandler("Calculator", Calculator.class);
             phm.addHandler("Calendar", Calendar.class);
             phm.addHandler("Node", Node.class);
 
