@@ -64,7 +64,7 @@ public class Client implements Runnable {
            System.out.println("-----------------------");
             System.out.println("Your choice:\n 1 - add an event \n 2 - list of all events \n" +
                     " 3 - delete an event \n 4 - join the network \n 5 - sign off" +
-                    "\n 6 - list of all active nodes \n 0 - exit ");
+                    "\n 6 - list of all active nodes \n 7 - modify entry \n 0 - exit ");
 
             int choice = sc.nextInt();
             switch(choice) {
@@ -92,10 +92,10 @@ public class Client implements Runnable {
                     System.out.println("===Getting list of all active nodes===");
                     listNodes();
                     break;
-//                case 7:
-//                    System.out.println("Test");
-//                    test();
-//                    break;
+                case 7:
+                    System.out.println("Test");
+                    modifyEntry();
+                    break;
                 case 0:
                     System.exit(0);
                     break;
@@ -104,6 +104,7 @@ public class Client implements Runnable {
             }
         }
     }
+
 
     public static String getOwnIpAddress() {
         return ownIpAddress;
@@ -152,42 +153,23 @@ public class Client implements Runnable {
 
     public void addEntry() {
         if (isOnline) {
-            System.out.println("Input date");
+
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             String date = null;
-            try {
-                date = br.readLine();
-            } catch (IOException e) {
-                System.out.println("IO error!");
-                System.exit(1);
-            }
-            System.out.println("Input time");
             String time = null;
-            try {
-                time = br.readLine();
-            } catch (IOException e) {
-                System.out.println("IO error!");
-                System.exit(1);
-            }
-            System.out.println("Input duration");
             String duration = null;
-            try {
-                duration = br.readLine();
-            } catch (IOException e) {
-                System.out.println("IO error!");
-                System.exit(1);
-            }
-            System.out.println("Input header (must be unique)");
             String header = null;
-            try {
-                header = br.readLine();
-            } catch (IOException e) {
-                System.out.println("IO error!");
-                System.exit(1);
-            }
-            System.out.println("Input comment");
             String comment = null;
             try {
+                System.out.println("Input date");
+                date = br.readLine();
+                System.out.println("Input time");
+                time = br.readLine();
+                System.out.println("Input duration");
+                duration = br.readLine();
+                System.out.println("Input header");
+                header = br.readLine();
+                System.out.println("Input comment");
                 comment = br.readLine();
             } catch (IOException e) {
                 System.out.println("IO error!");
@@ -270,10 +252,20 @@ public class Client implements Runnable {
             }
         }
     }
+
+    private void modifyEntry() {
+        if (isOnline){
+            deleteEntry();
+            addEntry();
+        } else {
+            System.out.println("Node is offline! Operation is not allowed");
+        }
+    }
+
     public void deleteEntry() {
         if (isOnline) {
             getListOfEvents(false);
-            System.out.println("Which entry do you want to delete? Input the number.");
+            System.out.println("Choose the number of the event:");
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
             String numberOfLine = null;
             try {
@@ -297,7 +289,7 @@ public class Client implements Runnable {
                     lineToRemove = br.readLine();
                 }
 
-                System.out.println("Line to remove:" + lineToRemove);
+                //System.out.println("Line to remove:" + lineToRemove);
                 br.close();
                 String currentLine = null;
                 ArrayList<String> lines = new ArrayList<String>();
