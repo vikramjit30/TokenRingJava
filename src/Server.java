@@ -9,11 +9,18 @@ import java.io.IOException;
 
 public class Server implements Runnable {
 
+	//TODO 
+	private int port;
 
+	public Server(int port)
+	{
 
+		this.port = port;
+	}
+	//END CHANGE
     @Override
     public void run() {
-        WebServer webServer = new WebServer(Client.getPort());
+        WebServer webServer = new WebServer(this.port); //TODO
 
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
 
@@ -22,7 +29,7 @@ public class Server implements Runnable {
         try {
             phm.addHandler("Calendar", Calendar.class);
             phm.addHandler("Node", Node.class);
-
+            phm.addHandler("TokenRing", TokenRing.class);
         } catch (XmlRpcException e) {
             e.printStackTrace();
         }

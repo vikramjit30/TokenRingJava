@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inherit-compiler-output="true" inheritJdk="true">
+	<output-test url="file://$MODULE_DIR$/out/test/MyCalendar"/>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<levels>
+		<level name="commons-logging-1.1" value="project"/>
+		<level name="ws-commons-util-1.0.2" value="project"/>
+		<level name="xmlrpc-client-3.1.3" value="project"/>
+		<level name="xmlrpc-common-3.1.3" value="project"/>
+		<level name="xmlrpc-server-3.1.3" value="project"/>
+	</levels>
+</component>

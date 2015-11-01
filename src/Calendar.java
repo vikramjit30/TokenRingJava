@@ -1,60 +1,31 @@
 //auxiliary class for implementing of XMLRPC-methods
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Vector;
 
 public class Calendar {
 
-    public int addEntry(String s) {
-        System.out.println("Adding new event... ");
-        PrintWriter out = null;
-        try {
-            out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
-            out.println(s);
-        } catch (IOException e) {
-            System.err.println(e);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
-        }
-        System.out.println("Done!");
-        return 42;
-    }
-
-    public int deleteEntry(String lineToRemove) {
-
-        System.out.println("Deleting event... ");
-        String currentLine = null;
-        ArrayList<String> lines = new ArrayList<String>();
-        File file = new File("Calendar.txt");
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            while ((currentLine = br.readLine()) != null) {
-                if (currentLine.equals(lineToRemove))continue;
-                lines.add(currentLine);
-            }
-
-            PrintWriter writer = new PrintWriter(file);
-            writer.print("");
-            writer.close();
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));   //true - false
-            for (int i = 0; i < lines.size(); i++) {
-                out.println(lines.get(i));
-            }
+	public int result_update(String result)
+	{
+	System.out.println(" Result is updating..");
+	PrintWriter out = null;
+    try {
+        out = new PrintWriter(new BufferedWriter(new FileWriter("Calendar.txt", true)));
+        out.println(result);
+    } catch (IOException e) {
+        System.err.println(e);
+    } finally {
+        if (out != null) {
             out.close();
-        } catch (IOException e) {
-              e.printStackTrace();
         }
-        System.out.println("Done!");
-        return 42;
     }
-
-
-    public Vector getList() {
+        System.out.println("Updation Done!");
+	     return 42;
+	}
+    
+	    public Vector<String> getList() {
         System.out.println("Returning list of all events...");
-        Vector result = new Vector();
+        Vector<String> result = new Vector<String>();
         File file = new File("Calendar.txt");
         BufferedReader br = null;
         try {
@@ -75,7 +46,7 @@ public class Calendar {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Done!");
+        System.out.println("List Passed!");
         return result;
     }
 
